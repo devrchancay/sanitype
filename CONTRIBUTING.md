@@ -157,6 +157,11 @@ To release:
 3. `git push --follow-tags` — the workflow takes it from there.
 4. Check the Actions run, the npm page and the GitHub release.
 
+Without local git access, bump the version and changelog through a pull
+request, then open the Actions tab, select the **Release** workflow, click
+**Run workflow** and enter the version (for example `0.1.0`). The workflow
+creates the tag itself.
+
 A manual `npm publish` from a machine with `npm login` still works
 (`prepublishOnly` runs the same checks) but does not produce a provenance
 attestation.
