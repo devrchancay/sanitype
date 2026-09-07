@@ -1,20 +1,30 @@
 name: Release
 
-# Publishes to npm and creates a GitHub release whenever a version tag is
-# pushed, e.g. `git tag v0.1.0 && git push origin v0.1.0`.
+# Publishes to npm and creates a GitHub release. Two ways to start it:
+#
+# 1. Push a version tag: `git tag v0.1.0 && git push origin v0.1.0`.
+# 2. Run it manually from the Actions tab ("Run workflow") with the version
+#    to release, e.g. `0.1.0`. The workflow then creates the tag itself, so
+#    no local git access is needed.
 #
 # Requirements:
 # - An `NPM_TOKEN` repository secret holding an npm granular access token
 #   with publish permission for this package.
-# - The tag must match the version in package.json.
+# - The version must match the one in package.json on the released commit.
 
 on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, without the leading v (must match package.json)'
+        required: true
+        type: string
 
 permissions:
-  contents: write # create the GitHub release
+  contents: write # push the tag and create the GitHub release
   id-token: write # npm provenance attestation
 
 concurrency:
@@ -25,21 +35,44 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
           cache: npm
 
-      - name: Verify the tag matches package.json
+      - name: Resolve the version and verify it matches package.json
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          VERSION="$(node -p "require('./package.json').version")"
-          if [ "$TAG" != "$VERSION" ]; then
-            echo "Tag v$TAG does not match package.json version $VERSION" >&2
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="${INPUT_VERSION#v}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "$VERSION" != "$PKG" ]; then
+            echo "Requested version $VERSION does not match package.json version $PKG" >&2
             exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create the tag (manual runs only)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, reusing it."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
           fi
 
       - run: npm ci
@@ -55,9 +88,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Extract release notes from CHANGELOG.md
-        id: notes
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
           node -e '
             const fs = require("fs");
             const version = process.argv[1];
@@ -71,7 +104,13 @@ jobs:
           ' "$VERSION"
           cat release-notes.md
 
-      - name: Create GitHub release
-        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file release-notes.md
+      - name: Create the GitHub release (skipped if it already exists)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists, leaving it as is."
+          else
+            gh release create "$TAG" --title "$TAG" --notes-file release-notes.md
+          fi

@@ -14,7 +14,7 @@ request process.
 
 ## Development setup
 
-Requirements: Node.js 18 or newer (20+ recommended) and npm.
+Requirements: Node.js 20.12 or newer and npm. The published package supports Node.js 18+, but the test runner (Vitest 5) needs Node.js 20.12+.
 
 ```sh
 git clone https://github.com/devrchancay/sanitype.git
@@ -135,7 +135,7 @@ Locale-specific identifiers follow the `<kind>_<country>` naming convention
   `feat(detectors): add iban detector`, `fix(express): define query as own property`,
   `docs: clarify mask semantics`.
 - Keep pull requests focused. A detector, a fix or a doc improvement per PR.
-- Fill in the pull request template. CI runs `npm run check` and `npm run build` on Node 18, 20 and 22; it must be green.
+- Fill in the pull request template. CI runs `npm run check` and `npm run build` on Node 20 and 22; it must be green.
 - Maintainers squash-merge. The PR title becomes the commit message.
 
 ## Releasing (maintainers)
@@ -156,6 +156,11 @@ To release:
 2. `npm version <patch|minor|major>` — updates `package.json`, commits and creates the `vX.Y.Z` tag.
 3. `git push --follow-tags` — the workflow takes it from there.
 4. Check the Actions run, the npm page and the GitHub release.
+
+Without local git access, bump the version and changelog through a pull
+request, then open the Actions tab, select the **Release** workflow, click
+**Run workflow** and enter the version (for example `0.1.0`). The workflow
+creates the tag itself.
 
 A manual `npm publish` from a machine with `npm login` still works
 (`prepublishOnly` runs the same checks) but does not produce a provenance
