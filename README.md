@@ -1,4 +1,4 @@
-# sanitytype
+# sanitype
 
 **TypeScript SDK to scrub, mask, and redact PII/sensitive data before it
 reaches an LLM, a log sink, an analytics pipeline, or any third-party API.**
@@ -20,7 +20,7 @@ Most existing solutions are either:
 - Regex-only libraries with no type safety, no config validation, and no
   guarantee about what "PII" actually means for your data shape.
 
-`sanitytype` is a backend-first, strongly-typed middleware: you describe
+`sanitype` is a backend-first, strongly-typed middleware: you describe
 the shape of your data with TypeScript types/schemas, and it structurally
 knows which fields need scrubbing — instead of guessing from unstructured
 text with regex alone.

@@ -1,4 +1,4 @@
-# SPEC.md — sanitytype
+# SPEC.md — sanitype
 
 ## 1. Problem statement
 
@@ -102,7 +102,7 @@ Per field or per detected category, the caller chooses an action:
   pseudonymization across calls without reversibility)
 - `drop` — remove the field entirely from the payload
 - `tokenize` — replace with a reversible token (requires a caller-supplied
-  token store interface — sanitytype defines the interface, does not ship
+  token store interface — sanitype defines the interface, does not ship
   a token store backend in v1)
 - `allow` — explicit override, field is known-safe, skip scrubbing (useful
   to silence a detector false-positive on a specific field without
@@ -110,7 +110,7 @@ Per field or per detected category, the caller chooses an action:
 
 ### 4.3 Configuration model
 
-Two ways to tell sanitytype what's sensitive, usable together:
+Two ways to tell sanitype what's sensitive, usable together:
 
 1. **Schema-driven** — annotate a schema (Zod-compatible) with a
    `sensitive()` wrapper/metadata marking specific fields and their action.

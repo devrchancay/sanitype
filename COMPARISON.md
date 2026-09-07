@@ -1,6 +1,6 @@
-# COMPARISON.md — sanitytype vs existing PII tools
+# COMPARISON.md — sanitype vs existing PII tools
 
-This documents why `sanitytype` exists as a distinct project rather than
+This documents why `sanitype` exists as a distinct project rather than
 "just use X". Written from general knowledge of the landscape at spec time
 — exact feature lists of third-party tools should be re-verified against
 their current docs before quoting this file externally (tools evolve).
@@ -17,7 +17,7 @@ their current docs before quoting this file externally (tools evolve).
   to integrate for "just scrub this object before an LLM call", and
   generally billed per API call — expensive at high request volume for a
   small/mid app.
-- **sanitytype's position**: in-process, zero network calls, zero
+- **sanitype's position**: in-process, zero network calls, zero
   per-request cost — trades some detection sophistication (no ML NER) for
   latency, cost, and dependency-surface guarantees.
 
@@ -30,7 +30,7 @@ their current docs before quoting this file externally (tools evolve).
   Node/TypeScript backend means running a separate Python service and
   calling it over HTTP — an operational dependency (another process to
   deploy/monitor) for teams that are TypeScript-only end to end.
-- **sanitytype's position**: native TypeScript, no separate service to
+- **sanitype's position**: native TypeScript, no separate service to
   operate, trading Presidio's stronger ML-based recall for operational
   simplicity in a Node-only stack.
 
@@ -42,8 +42,8 @@ their current docs before quoting this file externally (tools evolve).
   either scan everything as text (higher false-positive risk, no
   structure awareness) or require manual per-call configuration with no
   schema integration. Rarely typed with the object shape guarantee
-  sanitytype targets (structural input/output equivalence).
-- **sanitytype's position**: adds the schema-aware layer on top of
+  sanitype targets (structural input/output equivalence).
+- **sanitype's position**: adds the schema-aware layer on top of
   pattern detection, plus TypeScript-first API design, plus the
   audit/report object as a first-class output — not just "here's your
   scrubbed string back".
@@ -56,7 +56,7 @@ their current docs before quoting this file externally (tools evolve).
   competitor, just a frequently-confused adjacent category worth
   explicitly ruling out here so the positioning is clear.
 
-## Where sanitytype specifically differentiates
+## Where sanitype specifically differentiates
 
 1. **Schema-aware + pattern-based, combined.** Most tools pick one
    approach. Combining both means known fields get scrubbed with
@@ -71,18 +71,18 @@ their current docs before quoting this file externally (tools evolve).
    for TS-only teams.
 4. **LLM-call wrapping as a first-class, documented use case (Phase 2).**
    Most general-purpose PII tools treat "scrub before hitting an LLM" as
-   an example a user has to wire up themselves; sanitytype ships it as a
+   an example a user has to wire up themselves; sanitype ships it as a
    named, tested integration path.
 5. **Audit report as a first-class output**, not an afterthought — every
    call returns what was scrubbed, where, and by which detector, designed
    for teams that need to demonstrate what protective action was taken
-   (useful input to a compliance process, though sanitytype itself makes
+   (useful input to a compliance process, though sanitype itself makes
    no compliance certification claim — see SPEC.md §3).
 
-## What sanitytype deliberately does NOT try to beat
+## What sanitype deliberately does NOT try to beat
 
 - Presidio/Cloud DLP on raw detection recall via ML-based NER — v1 is
   pattern + schema based, not ML based (see SPEC.md §3, ROADMAP.md Phase 4
   for a possible future path, not a v1 promise).
-- Any tool's claim of compliance certification — sanitytype is a control,
+- Any tool's claim of compliance certification — sanitype is a control,
   not a certification, and says so explicitly (SPEC.md §3).
