@@ -1,0 +1,136 @@
+{
+  "name": "sanitype",
+  "version": "0.1.0",
+  "description": "Schema-aware, in-process PII scrubbing for TypeScript: redact, mask, hash, drop or tokenize sensitive data before it reaches an LLM, a log sink, an analytics pipeline or a third-party API.",
+  "keywords": [
+    "pii",
+    "redact",
+    "mask",
+    "sanitize",
+    "scrub",
+    "privacy",
+    "dlp",
+    "llm",
+    "openai",
+    "anthropic",
+    "express",
+    "zod",
+    "typescript",
+    "security",
+    "gdpr"
+  ],
+  "homepage": "https://github.com/devrchancay/sanitype#readme",
+  "bugs": {
+    "url": "https://github.com/devrchancay/sanitype/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devrchancay/sanitype.git"
+  },
+  "license": "MIT",
+  "author": "Ramón Chancay <hola@ramonchancay.me>",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./zod": {
+      "import": {
+        "types": "./dist/zod/index.d.ts",
+        "default": "./dist/zod/index.js"
+      },
+      "require": {
+        "types": "./dist/zod/index.d.cts",
+        "default": "./dist/zod/index.cjs"
+      }
+    },
+    "./express": {
+      "import": {
+        "types": "./dist/express/index.d.ts",
+        "default": "./dist/express/index.js"
+      },
+      "require": {
+        "types": "./dist/express/index.d.cts",
+        "default": "./dist/express/index.cjs"
+      }
+    },
+    "./openai": {
+      "import": {
+        "types": "./dist/openai/index.d.ts",
+        "default": "./dist/openai/index.js"
+      },
+      "require": {
+        "types": "./dist/openai/index.d.cts",
+        "default": "./dist/openai/index.cjs"
+      }
+    },
+    "./anthropic": {
+      "import": {
+        "types": "./dist/anthropic/index.d.ts",
+        "default": "./dist/anthropic/index.js"
+      },
+      "require": {
+        "types": "./dist/anthropic/index.d.cts",
+        "default": "./dist/anthropic/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "bench": "tsx bench/run.ts",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "prepublishOnly": "npm run check && npm run build"
+  },
+  "peerDependencies": {
+    "zod": ">=3.22.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.4.1",
+    "@vitest/coverage-v8": "^5.0.0",
+    "eslint": "^10.10.0",
+    "express": "^5.2.1",
+    "fast-check": "^4.9.0",
+    "prettier": "^3.9.6",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^5.0.0",
+    "zod": "^4.5.4"
+  }
+}
