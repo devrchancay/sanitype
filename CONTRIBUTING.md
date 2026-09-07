@@ -140,10 +140,26 @@ Locale-specific identifiers follow the `<kind>_<country>` naming convention
 
 ## Releasing (maintainers)
 
-1. Update `CHANGELOG.md`: move `Unreleased` entries under the new version with today's date.
-2. `npm version <patch|minor|major>` (updates `package.json` and creates a tag).
-3. `npm publish` runs `prepublishOnly` (`check` + `build`) before publishing.
-4. `git push --follow-tags` and create a GitHub release from the changelog section.
+Releases are published by `.github/workflows/release.yml` when a version tag
+is pushed. The workflow verifies that the tag matches `package.json`, runs
+`npm run check` and `npm run build`, publishes to npm with provenance, and
+creates a GitHub release from the matching `CHANGELOG.md` section.
+
+One-time setup: create an npm [granular access token](https://docs.npmjs.com/creating-and-viewing-access-tokens)
+with **read and write** permission scoped to the `sanitype` package, and store
+it as the `NPM_TOKEN` secret of the repository (Settings → Secrets and
+variables → Actions).
+
+To release:
+
+1. Move the `Unreleased` entries in `CHANGELOG.md` under the new version with today's date, and update the comparison links at the bottom.
+2. `npm version <patch|minor|major>` — updates `package.json`, commits and creates the `vX.Y.Z` tag.
+3. `git push --follow-tags` — the workflow takes it from there.
+4. Check the Actions run, the npm page and the GitHub release.
+
+A manual `npm publish` from a machine with `npm login` still works
+(`prepublishOnly` runs the same checks) but does not produce a provenance
+attestation.
 
 ## Questions
 
