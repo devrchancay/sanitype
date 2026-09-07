@@ -1,0 +1,77 @@
+name: Release
+
+# Publishes to npm and creates a GitHub release whenever a version tag is
+# pushed, e.g. `git tag v0.1.0 && git push origin v0.1.0`.
+#
+# Requirements:
+# - An `NPM_TOKEN` repository secret holding an npm granular access token
+#   with publish permission for this package.
+# - The tag must match the version in package.json.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write # create the GitHub release
+  id-token: write # npm provenance attestation
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Verify the tag matches package.json
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "Tag v$TAG does not match package.json version $VERSION" >&2
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+
+      - name: Show what will be published
+        run: npm publish --dry-run
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Extract release notes from CHANGELOG.md
+        id: notes
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          node -e '
+            const fs = require("fs");
+            const version = process.argv[1];
+            const changelog = fs.readFileSync("CHANGELOG.md", "utf8");
+            const start = changelog.indexOf(`## [${version}]`);
+            if (start < 0) { console.error(`No CHANGELOG section for ${version}`); process.exit(1); }
+            const rest = changelog.slice(start);
+            const next = rest.indexOf("\n## [", 1);
+            const section = (next < 0 ? rest : rest.slice(0, next)).trim();
+            fs.writeFileSync("release-notes.md", section + "\n");
+          ' "$VERSION"
+          cat release-notes.md
+
+      - name: Create GitHub release
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file release-notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

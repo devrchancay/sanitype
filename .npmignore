@@ -1,0 +1,6 @@
+# The `files` allowlist in package.json already restricts what is published
+# (dist, README.md, LICENSE, CHANGELOG.md). This file trims what remains
+# inside those entries so the tarball stays small.
+dist/**/*.map
+dist/**/*.tsbuildinfo
+*.tgz
