@@ -8,7 +8,8 @@ their current docs before quoting this file externally (tools evolve).
 ## Landscape categories
 
 ### 1. Enterprise DLP APIs (Google Cloud DLP, Microsoft Purview/Presidio
-   as a hosted service, AWS Macie)
+
+as a hosted service, AWS Macie)
 
 - **Strength**: broad entity coverage, ML-based detection, compliance
   tooling built around them.

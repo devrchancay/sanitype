@@ -1,5 +1,10 @@
 # SPEC.md — sanitype
 
+> Status: **implemented** in `0.1.0`. This document remains the functional
+> reference; where the implementation made a concrete choice on an open
+> question, §8 records it. Usage documentation lives in `README.md` and
+> `docs/`.
+
 ## 1. Problem statement
 
 Applications increasingly pipe user-originated data into systems that were
@@ -123,6 +128,7 @@ Schema-driven takes precedence when both apply to the same field (explicit
 beats heuristic).
 
 ### 4.4 API surface (illustrative — final signatures decided at
+
 implementation time, not fixed here)
 
 ```
@@ -178,3 +184,35 @@ preview — never the raw original value, even in the report.
 - Whether detection runs synchronously or exposes an async variant for
   large payloads / future ML-based detectors (v2 concern, but the core
   type signature should not paint us into a sync-only corner).
+
+## 8. Decisions taken during implementation
+
+Resolutions to the open questions in §7 and to the "illustrative" API
+surface in §4.4:
+
+- **Locale list for v1**: `ssn_us` and `cedula_ec` (both checksum/range
+  validated, both enabled by default). Other locales are added through
+  `defineDetector` or contributed as built-ins following the
+  `<kind>_<country>` naming convention.
+- **Tokenize storage**: the core defines the `TokenStore` interface and
+  ships `createInMemoryTokenStore()` explicitly documented as a
+  development/short-lived-round-trip store. No durable storage is shipped.
+- **Sync vs. async**: `sanitize()` is synchronous; detectors are synchronous
+  in v1. `sanitizeAsync()` exists for asynchronous token stores and is the
+  extension point for future asynchronous detectors, so the sync hot path
+  is never regressed by them.
+- **Final API surface**: `sanitize`, `sanitizeAsync`, `createSanitizer`
+  (instance methods `sanitize`, `sanitizeAsync`, `detect`, `extend`),
+  `defineDetector`, `wrapLLMCall`, and the subpath entry points
+  `sanitype/zod`, `sanitype/express`, `sanitype/openai`,
+  `sanitype/anthropic`.
+- **Schema integration**: implemented as a side-channel (`sensitive()`
+  registers the schema instance in a `WeakMap`; `fieldsFromSchema()` walks
+  the schema structurally). Zod 3 and 4 are supported without importing
+  `zod`.
+- **Structural guarantee and `drop`**: every action except `drop`
+  preserves the input shape; `drop` removes keys/elements and is documented
+  as the one shape-changing action.
+- **Unsupported values**: `Map`, `Set`, buffers and class instances are
+  passed through and listed in `report.skipped` rather than silently
+  ignored. Circular references become `'[Circular]'`.
