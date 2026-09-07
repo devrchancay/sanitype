@@ -1,4 +1,4 @@
-# ARCHITECTURE.md — sanitytype
+# ARCHITECTURE.md — sanitype
 
 Internal design notes. This describes how the system is intended to be
 built, once implementation starts — it is not itself implementation.
@@ -67,9 +67,9 @@ Keeping detectors as independent, named, toggleable units means:
 Schema-driven configuration wraps a Zod schema (or Zod-compatible/standard
 schema) with a parallel "sensitivity map" — a side-channel describing which
 field paths are sensitive and what action applies, without mutating the
-original schema's validation behavior. This keeps `sanitytype` a pure
+original schema's validation behavior. This keeps `sanitype` a pure
 add-on layer: an app's existing Zod schemas keep working for validation as
-they already do, and sanitytype consumes them read-only for field-path
+they already do, and sanitype consumes them read-only for field-path
 resolution.
 
 This side-channel approach (vs. requiring a custom schema-wrapper syntax)
@@ -79,7 +79,7 @@ validation schemas just to adopt scrubbing.
 ## 4. Framework adapters
 
 Adapters are thin, separately-published entry points (e.g.
-`sanitytype/express`, `sanitytype/fastify`) that:
+`sanitype/express`, `sanitype/fastify`) that:
 1. Wrap the framework's request/response body access.
 2. Call the core `sanitize()` against the body using a pre-configured
    `Sanitizer` instance.
@@ -99,7 +99,7 @@ call) and returns a wrapped version that:
    argument shape the wrapped SDK expects — the wrapper is written per
    supported SDK shape, not via reflection magic).
 3. Calls the real function with sanitized arguments.
-4. Returns the real result unmodified — sanitytype never touches the LLM's
+4. Returns the real result unmodified — sanitype never touches the LLM's
    response, only the outbound request.
 
 This wrapper is intentionally SDK-specific (e.g. an OpenAI-shape wrapper vs.

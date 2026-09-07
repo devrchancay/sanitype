@@ -1,4 +1,4 @@
-# ROADMAP.md — sanitytype
+# ROADMAP.md — sanitype
 
 Phased plan. No code exists yet — this defines the MVP boundary so
 implementation (when it starts) has a clear, small first target instead of
@@ -9,17 +9,18 @@ building the whole SPEC at once.
 - [x] Problem statement, goals, non-goals (`SPEC.md`)
 - [x] Architecture design (`ARCHITECTURE.md`)
 - [x] Competitive comparison (`COMPARISON.md`)
-- [ ] Name/branding finalized — **done**: `sanitytype`, repo live at
-      github.com/devrchancay/sanitytype, npm name available at time of
-      writing (verify again immediately before first publish — availability
-      can change).
+- [x] Name/branding finalized — **done**: `sanitype` (renamed from an
+      earlier working name that risked confusion with the unrelated Sanity
+      CMS product). Repo live at github.com/devrchancay/sanitype, npm name
+      available at time of writing (verify again immediately before first
+      publish — availability can change).
 - [ ] Decide open questions from SPEC.md §7 before writing the first type
       definition (locale list for ID detectors, tokenize storage stance,
       sync-vs-async core signature).
 
 ## Phase 1 — MVP (core only, no adapters)
 
-Goal: a single npm package, `sanitytype`, installable and usable
+Goal: a single npm package, `sanitype`, installable and usable
 standalone, with no framework/LLM-SDK adapters yet.
 
 Scope:
@@ -44,7 +45,7 @@ Explicitly NOT in Phase 1: any Express/Fastify/Hono adapter, any LLM SDK
 wrapper, any locale beyond a documented minimal default set, hashing,
 tokenization.
 
-**MVP is done when**: a developer can `npm install sanitytype`, define a
+**MVP is done when**: a developer can `npm install sanitype`, define a
 plain object type, mark 2-3 fields sensitive via the schema side-channel,
 call `sanitize()`, and get correctly scrubbed output with a report — all
 from reading the README alone, no other docs needed.
@@ -56,10 +57,10 @@ documented path — this is the primary differentiator from generic PII
 scrubbers, so it should not lag far behind MVP.
 
 Scope:
-- One HTTP framework adapter: Express (`sanitytype/express`) — chosen for
+- One HTTP framework adapter: Express (`sanitype/express`) — chosen for
   ecosystem size, not necessarily fanciness.
 - One LLM wrapper: OpenAI-compatible chat completion shape
-  (`sanitytype/openai`) — chosen because "OpenAI-compatible" also covers
+  (`sanitype/openai`) — chosen because "OpenAI-compatible" also covers
   many proxies/local model servers, maximizing coverage for one adapter.
 - Add `hash` action (deterministic, documented algorithm choice).
 - Expand detector locale coverage: add Ecuador cédula pattern alongside
