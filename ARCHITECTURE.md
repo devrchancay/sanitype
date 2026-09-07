@@ -1,7 +1,18 @@
 # ARCHITECTURE.md — sanitype
 
-Internal design notes. This describes how the system is intended to be
-built, once implementation starts — it is not itself implementation.
+Internal design notes. The implementation in `src/` follows this design;
+file references below point to where each part lives.
+
+| Section               | Implementation                                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pipeline model        | `src/sanitizer.ts` (`walk`, `walkString`, `applyAction`)                                                                                         |
+| Detector plugin model | `src/detectors/define.ts`, `src/detectors/*.ts`, overlap resolution in `src/detectors/resolve.ts`                                                |
+| Schema integration    | `src/zod/index.ts`                                                                                                                               |
+| Framework adapters    | `src/express/index.ts`                                                                                                                           |
+| LLM wrappers          | `src/llm/wrap.ts`, `src/openai/index.ts`, `src/anthropic/index.ts`                                                                               |
+| Performance           | detector `prefilter` hooks, `maxStringLength`, `bench/run.ts`                                                                                    |
+| Trust surface         | `test/trust.test.ts`                                                                                                                             |
+| Testing strategy      | `test/` (golden tests per detector, property tests in `test/structure.property.test.ts`, real Express server in `test/adapters/express.test.ts`) |
 
 ## 1. Pipeline model
 
@@ -56,6 +67,7 @@ forking the library.
 ### Why not a single big regex blob
 
 Keeping detectors as independent, named, toggleable units means:
+
 - A consumer can disable exactly one noisy detector without losing the rest.
 - The report can attribute every scrub action to a specific named detector
   (auditability requirement from SPEC.md §4.4).
@@ -80,6 +92,7 @@ validation schemas just to adopt scrubbing.
 
 Adapters are thin, separately-published entry points (e.g.
 `sanitype/express`, `sanitype/fastify`) that:
+
 1. Wrap the framework's request/response body access.
 2. Call the core `sanitize()` against the body using a pre-configured
    `Sanitizer` instance.
@@ -94,6 +107,7 @@ tools, cron jobs) without pulling in Express types.
 
 `wrapLLMCall(fn)` takes a function (typically an SDK's chat-completion
 call) and returns a wrapped version that:
+
 1. Intercepts the arguments before the real call executes.
 2. Runs `sanitize()` against the message content array (or whatever
    argument shape the wrapped SDK expects — the wrapper is written per
