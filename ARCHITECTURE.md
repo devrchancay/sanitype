@@ -91,7 +91,7 @@ validation schemas just to adopt scrubbing.
 ## 4. Framework adapters
 
 Adapters are thin, separately-published entry points (e.g.
-`sanitype/express`, `sanitype/fastify`) that:
+`@devrchancay/sanitype/express`, `@devrchancay/sanitype/fastify`) that:
 
 1. Wrap the framework's request/response body access.
 2. Call the core `sanitize()` against the body using a pre-configured

@@ -8,8 +8,8 @@ The primary use case. User messages, support tickets and uploaded documents get 
 
 ```ts
 import OpenAI from 'openai';
-import { createSanitizer } from 'sanitype';
-import { sanitizeOpenAI } from 'sanitype/openai';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { sanitizeOpenAI } from '@devrchancay/sanitype/openai';
 
 const sanitizer = createSanitizer({
   detectors: { email: 'mask', phone: 'mask', person_name: true },
@@ -35,7 +35,7 @@ Example: `examples/openai-chat.ts`, `examples/anthropic-messages.ts`.
 When the model needs to refer to the value (for example to draft a reply that includes the customer's email), tokenize instead of redacting and restore the tokens in the answer:
 
 ```ts
-import { createInMemoryTokenStore, createSanitizer } from 'sanitype';
+import { createInMemoryTokenStore, createSanitizer } from '@devrchancay/sanitype';
 
 const store = createInMemoryTokenStore();
 const sanitizer = createSanitizer({
@@ -56,8 +56,8 @@ Log request bodies for debugging while guaranteeing that credentials and persona
 
 ```ts
 import express from 'express';
-import { createSanitizer } from 'sanitype';
-import { sanitizeRequest } from 'sanitype/express';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { sanitizeRequest } from '@devrchancay/sanitype/express';
 
 const sanitizer = createSanitizer({
   fields: { '**.password': 'drop' },
@@ -85,7 +85,7 @@ Sanitize at the logger boundary so every call site is covered:
 
 ```ts
 import pino from 'pino';
-import { createSanitizer } from 'sanitype';
+import { createSanitizer } from '@devrchancay/sanitype';
 
 const sanitizer = createSanitizer({
   fields: { '**.password': 'drop', '**.authorization': 'redact' },
@@ -142,8 +142,8 @@ Forward only what the partner needs. Deriving the rules from the Zod schema that
 
 ```ts
 import { z } from 'zod';
-import { createSanitizer } from 'sanitype';
-import { fieldsFromSchema, sensitive } from 'sanitype/zod';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { fieldsFromSchema, sensitive } from '@devrchancay/sanitype/zod';
 
 const Order = z.object({
   id: z.string(),
@@ -179,7 +179,7 @@ const helpdesk = createSanitizer({
 `api_key_secret` runs by default. Add a company-specific pattern for internal tokens:
 
 ```ts
-import { defineDetector } from 'sanitype';
+import { defineDetector } from '@devrchancay/sanitype';
 
 const internalToken = defineDetector({
   name: 'internal_token',

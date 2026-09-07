@@ -6,14 +6,14 @@
  *
  * ```ts
  * import Anthropic from '@anthropic-ai/sdk';
- * import { createSanitizer } from 'sanitype';
- * import { sanitizeAnthropic } from 'sanitype/anthropic';
+ * import { createSanitizer } from '@devrchancay/sanitype';
+ * import { sanitizeAnthropic } from '@devrchancay/sanitype/anthropic';
  *
  * const anthropic = sanitizeAnthropic(new Anthropic(), createSanitizer());
  * await anthropic.messages.create({ model: 'claude-sonnet-5', max_tokens: 1024, messages });
  * ```
  *
- * @module sanitype/anthropic
+ * @module @devrchancay/sanitype/anthropic
  */
 import { sanitizeParams, sanitizeParamsAsync, wrapLLMCall } from '../llm/wrap.js';
 import type { LLMWrapOptions, SanitizedParams } from '../llm/wrap.js';

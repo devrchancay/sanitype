@@ -5,7 +5,7 @@
  * Works with Zod 3 and Zod 4 through duck typing; `zod` is never imported at
  * runtime, so this module adds no dependency to your bundle.
  *
- * @module sanitype/zod
+ * @module @devrchancay/sanitype/zod
  */
 import type { Action, FieldRule, FieldRules } from '../types.js';
 import { ACTIONS } from '../types.js';
