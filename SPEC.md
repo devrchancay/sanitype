@@ -204,8 +204,8 @@ surface in §4.4:
 - **Final API surface**: `sanitize`, `sanitizeAsync`, `createSanitizer`
   (instance methods `sanitize`, `sanitizeAsync`, `detect`, `extend`),
   `defineDetector`, `wrapLLMCall`, and the subpath entry points
-  `sanitype/zod`, `sanitype/express`, `sanitype/openai`,
-  `sanitype/anthropic`.
+  `@devrchancay/sanitype/zod`, `@devrchancay/sanitype/express`, `@devrchancay/sanitype/openai`,
+  `@devrchancay/sanitype/anthropic`.
 - **Schema integration**: implemented as a side-channel (`sensitive()`
   registers the schema instance in a `WeakMap`; `fieldsFromSchema()` walks
   the schema structurally). Zod 3 and 4 are supported without importing

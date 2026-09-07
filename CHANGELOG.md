@@ -8,7 +8,7 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [0.1.0] - 2026-09-07
 
-First implementation of the design described in `SPEC.md`.
+First implementation of the design described in `SPEC.md`. Published to npm as `@devrchancay/sanitype`: the registry rejects the unscoped name `sanitype` as too similar to existing packages.
 
 ### Added
 
@@ -21,10 +21,10 @@ First implementation of the design described in `SPEC.md`.
 - `defineDetector()` for custom detectors with `pattern`, `test`, `validate`, `prefilter` and `mask` hooks.
 - Structured report with entries, skipped values, summary, `modified` flag, duration and optional masked previews (`audit: true`).
 - `TokenStore` interface and `createInMemoryTokenStore()` with `restore()`.
-- `sanitype/zod`: `sensitive()`, `fieldsFromSchema()`, `.describe('sensitive:...')` and `.meta({ sensitive })` support for Zod 3 and 4.
-- `sanitype/express`: `sanitizeRequest()` and `sanitizeResponse()` middleware for Express 4 and 5.
-- `sanitype/openai`: `sanitizeOpenAI()`, `wrapChatCompletions()`, `wrapResponses()` and parameter helpers.
-- `sanitype/anthropic`: `sanitizeAnthropic()`, `wrapMessages()` and parameter helpers.
+- `@devrchancay/sanitype/zod`: `sensitive()`, `fieldsFromSchema()`, `.describe('sensitive:...')` and `.meta({ sensitive })` support for Zod 3 and 4.
+- `@devrchancay/sanitype/express`: `sanitizeRequest()` and `sanitizeResponse()` middleware for Express 4 and 5.
+- `@devrchancay/sanitype/openai`: `sanitizeOpenAI()`, `wrapChatCompletions()`, `wrapResponses()` and parameter helpers.
+- `@devrchancay/sanitype/anthropic`: `sanitizeAnthropic()`, `wrapMessages()` and parameter helpers.
 - `wrapLLMCall()` for any SDK with a request-object signature.
 - Test suite: golden tests per detector, property-based structural tests, real Express integration tests, adapter tests and a trust test that forbids networking code and runtime dependencies.
 - Benchmark script (`npm run bench`).

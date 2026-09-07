@@ -1,5 +1,5 @@
 {
-  "name": "sanitype",
+  "name": "@devrchancay/sanitype",
   "version": "0.1.0",
   "description": "Schema-aware, in-process PII scrubbing for TypeScript: redact, mask, hash, drop or tokenize sensitive data before it reaches an LLM, a log sink, an analytics pipeline or a third-party API.",
   "keywords": [
@@ -28,7 +28,10 @@
     "url": "git+https://github.com/devrchancay/sanitype.git"
   },
   "license": "MIT",
-  "author": "Ramón Chancay <hola@ramonchancay.me>",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Ram\u00f3n Chancay <hola@ramonchancay.me>",
   "type": "module",
   "sideEffects": false,
   "engines": {

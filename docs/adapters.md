@@ -2,19 +2,19 @@
 
 Adapters are thin entry points around the core. Each one is a separate import path so unused adapters are never bundled, and none of them imports its framework or SDK at runtime: they rely on structural types only.
 
-| Import               | Exports                                                                                                                                                  |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sanitype/express`   | `sanitizeRequest`, `sanitizeResponse`                                                                                                                    |
-| `sanitype/openai`    | `sanitizeOpenAI`, `wrapChatCompletions`, `wrapResponses`, `sanitizeChatCompletionParams`, `sanitizeChatCompletionParamsAsync`, `sanitizeResponsesParams` |
-| `sanitype/anthropic` | `sanitizeAnthropic`, `wrapMessages`, `sanitizeMessageParams`, `sanitizeMessageParamsAsync`                                                               |
-| `sanitype` (core)    | `wrapLLMCall`, `sanitizeParams`, `sanitizeParamsAsync`                                                                                                   |
+| Import                            | Exports                                                                                                                                                  |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@devrchancay/sanitype/express`   | `sanitizeRequest`, `sanitizeResponse`                                                                                                                    |
+| `@devrchancay/sanitype/openai`    | `sanitizeOpenAI`, `wrapChatCompletions`, `wrapResponses`, `sanitizeChatCompletionParams`, `sanitizeChatCompletionParamsAsync`, `sanitizeResponsesParams` |
+| `@devrchancay/sanitype/anthropic` | `sanitizeAnthropic`, `wrapMessages`, `sanitizeMessageParams`, `sanitizeMessageParamsAsync`                                                               |
+| `@devrchancay/sanitype` (core)    | `wrapLLMCall`, `sanitizeParams`, `sanitizeParamsAsync`                                                                                                   |
 
 ## Express
 
 ```ts
 import express from 'express';
-import { createSanitizer } from 'sanitype';
-import { sanitizeRequest, sanitizeResponse } from 'sanitype/express';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { sanitizeRequest, sanitizeResponse } from '@devrchancay/sanitype/express';
 
 const sanitizer = createSanitizer({ fields: { password: 'drop' }, detectors: { email: 'mask' } });
 const app = express();
@@ -57,7 +57,7 @@ Wraps `res.json()` so every JSON body is sanitized before it is serialised. The 
 ### Typing the report on `req`
 
 ```ts
-import type { SanitizeReport } from 'sanitype';
+import type { SanitizeReport } from '@devrchancay/sanitype';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -74,7 +74,7 @@ Covers the official `openai` package and any client that uses the same request s
 
 ```ts
 import OpenAI from 'openai';
-import { sanitizeOpenAI } from 'sanitype/openai';
+import { sanitizeOpenAI } from '@devrchancay/sanitype/openai';
 
 const openai = sanitizeOpenAI(new OpenAI(), sanitizer, {
   roles: ['user', 'tool'], // default: every role, including system and assistant history
@@ -88,7 +88,7 @@ const openai = sanitizeOpenAI(new OpenAI(), sanitizer, {
 ### Wrap a function
 
 ```ts
-import { wrapChatCompletions, wrapResponses } from 'sanitype/openai';
+import { wrapChatCompletions, wrapResponses } from '@devrchancay/sanitype/openai';
 
 const create = wrapChatCompletions(
   client.chat.completions.create.bind(client.chat.completions),
@@ -101,7 +101,7 @@ const stream = await create({ model, messages, stream: true }); // return value 
 ### Transform parameters only
 
 ```ts
-import { sanitizeChatCompletionParams } from 'sanitype/openai';
+import { sanitizeChatCompletionParams } from '@devrchancay/sanitype/openai';
 
 const { params, report } = sanitizeChatCompletionParams({ model, messages }, sanitizer);
 ```
@@ -110,7 +110,7 @@ const { params, report } = sanitizeChatCompletionParams({ model, messages }, san
 
 ```ts
 import Anthropic from '@anthropic-ai/sdk';
-import { sanitizeAnthropic, wrapMessages } from 'sanitype/anthropic';
+import { sanitizeAnthropic, wrapMessages } from '@devrchancay/sanitype/anthropic';
 
 const anthropic = sanitizeAnthropic(new Anthropic(), sanitizer, {
   system: true, // also sanitize the system prompt (default)
@@ -125,7 +125,7 @@ const anthropic = sanitizeAnthropic(new Anthropic(), sanitizer, {
 `wrapLLMCall` wraps any function whose first argument is a request object. Name the keys that carry user content:
 
 ```ts
-import { wrapLLMCall } from 'sanitype';
+import { wrapLLMCall } from '@devrchancay/sanitype';
 
 const generate = wrapLLMCall(sdk.generate, sanitizer, {
   keys: ['prompt', 'history'],

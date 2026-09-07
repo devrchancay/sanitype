@@ -146,7 +146,7 @@ is pushed. The workflow verifies that the tag matches `package.json`, runs
 creates a GitHub release from the matching `CHANGELOG.md` section.
 
 One-time setup: create an npm [granular access token](https://docs.npmjs.com/creating-and-viewing-access-tokens)
-with **read and write** permission scoped to the `sanitype` package, and store
+with **read and write** permission scoped to the `@devrchancay/sanitype` package, and store
 it as the `NPM_TOKEN` secret of the repository (Settings → Secrets and
 variables → Actions).
 

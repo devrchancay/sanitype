@@ -3,8 +3,8 @@
  *
  * ```ts
  * import express from 'express';
- * import { createSanitizer } from 'sanitype';
- * import { sanitizeRequest, sanitizeResponse } from 'sanitype/express';
+ * import { createSanitizer } from '@devrchancay/sanitype';
+ * import { sanitizeRequest, sanitizeResponse } from '@devrchancay/sanitype/express';
  *
  * const sanitizer = createSanitizer({ fields: { 'password': 'drop' } });
  * app.use(express.json());
@@ -15,7 +15,7 @@
  * The adapter only relies on the structural shape of Express requests and
  * responses, so it works with Express 4 and 5 without importing either.
  *
- * @module sanitype/express
+ * @module @devrchancay/sanitype/express
  */
 import type { Sanitizer } from '../sanitizer.js';
 import type { SanitizeReport } from '../types.js';
