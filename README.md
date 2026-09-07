@@ -3,11 +3,11 @@
 **Schema-aware, in-process PII scrubbing for TypeScript.** Redact, mask, hash, drop or tokenize sensitive data before it reaches an LLM, a log sink, an analytics pipeline or a third-party API.
 
 [![CI](https://github.com/devrchancay/sanitype/actions/workflows/ci.yml/badge.svg)](https://github.com/devrchancay/sanitype/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/sanitype.svg)](https://www.npmjs.com/package/sanitype)
+[![npm](https://img.shields.io/npm/v/@devrchancay/sanitype.svg)](https://www.npmjs.com/package/@devrchancay/sanitype)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 ```ts
-import { sanitize } from 'sanitype';
+import { sanitize } from '@devrchancay/sanitype';
 
 const { data, report } = sanitize({
   user: { email: 'john.doe@example.com', phone: '+1 (555) 123-4567' },
@@ -53,17 +53,17 @@ report.summary; // { email: 1, phone: 1, credit_card: 1, ip_address: 1, api_key_
 ## Installation
 
 ```sh
-npm install sanitype
+npm install @devrchancay/sanitype
 ```
 
-Requirements: Node.js 18 or newer. ESM and CommonJS are both supported. `zod` is an optional peer dependency, only needed for `sanitype/zod`.
+The package is published under the `@devrchancay` scope (npm rejects the bare name `sanitype` as too similar to existing packages). Requirements: Node.js 18 or newer. ESM and CommonJS are both supported. `zod` is an optional peer dependency, only needed for `@devrchancay/sanitype/zod`.
 
 ## Quickstart
 
 ### 1. One-off call
 
 ```ts
-import { sanitize } from 'sanitype';
+import { sanitize } from '@devrchancay/sanitype';
 
 const { data } = sanitize(payload);
 ```
@@ -75,7 +75,7 @@ With no configuration, the seven high-confidence detectors run on every string i
 Mark the fields you already know about, choose an action per field, and keep the detectors as a safety net for everything else:
 
 ```ts
-import { createSanitizer } from 'sanitype';
+import { createSanitizer } from '@devrchancay/sanitype';
 
 const sanitizer = createSanitizer({
   fields: {
@@ -98,8 +98,8 @@ The sanitizer compiles its configuration once and is safe to share across concur
 
 ```ts
 import OpenAI from 'openai';
-import { createSanitizer } from 'sanitype';
-import { sanitizeOpenAI } from 'sanitype/openai';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { sanitizeOpenAI } from '@devrchancay/sanitype/openai';
 
 const openai = sanitizeOpenAI(new OpenAI(), createSanitizer());
 
@@ -146,7 +146,7 @@ createSanitizer({ detectors: ['email', 'credit_card'] });
 Add your own detector for company-specific formats:
 
 ```ts
-import { defineDetector } from 'sanitype';
+import { defineDetector } from '@devrchancay/sanitype';
 
 const customerId = defineDetector({
   name: 'customer_id',
@@ -213,12 +213,12 @@ The report never contains a raw sensitive value, even in audit mode. Log it free
 
 ## Zod schemas
 
-`sanitype/zod` lets you mark sensitivity next to your existing validation schema without changing its behaviour. It works with Zod 3 and Zod 4 and does not import `zod` itself.
+`@devrchancay/sanitype/zod` lets you mark sensitivity next to your existing validation schema without changing its behaviour. It works with Zod 3 and Zod 4 and does not import `zod` itself.
 
 ```ts
 import { z } from 'zod';
-import { createSanitizer } from 'sanitype';
-import { sensitive, fieldsFromSchema } from 'sanitype/zod';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { sensitive, fieldsFromSchema } from '@devrchancay/sanitype/zod';
 
 const User = z.object({
   id: z.string().uuid(),
@@ -249,8 +249,8 @@ Call `sensitive()` last in a chain: `.optional()`, `.describe()` and similar ret
 
 ```ts
 import express from 'express';
-import { createSanitizer } from 'sanitype';
-import { sanitizeRequest, sanitizeResponse } from 'sanitype/express';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { sanitizeRequest, sanitizeResponse } from '@devrchancay/sanitype/express';
 
 const sanitizer = createSanitizer({ fields: { password: 'drop' } });
 const app = express();
@@ -271,10 +271,14 @@ app.post('/tickets', (req, res) => {
 
 Wrappers sanitize the **outbound request only**. Responses are returned exactly as the SDK produced them.
 
-### OpenAI-compatible (`sanitype/openai`)
+### OpenAI-compatible (`@devrchancay/sanitype/openai`)
 
 ```ts
-import { sanitizeOpenAI, wrapChatCompletions, sanitizeChatCompletionParams } from 'sanitype/openai';
+import {
+  sanitizeOpenAI,
+  wrapChatCompletions,
+  sanitizeChatCompletionParams,
+} from '@devrchancay/sanitype/openai';
 
 // Patch a client in place (chat.completions.create and responses.create):
 const openai = sanitizeOpenAI(new OpenAI(), sanitizer, {
@@ -294,10 +298,10 @@ const { params, report } = sanitizeChatCompletionParams({ model, messages }, san
 
 Streaming works unchanged because the wrapper returns whatever the SDK returns.
 
-### Anthropic (`sanitype/anthropic`)
+### Anthropic (`@devrchancay/sanitype/anthropic`)
 
 ```ts
-import { sanitizeAnthropic } from 'sanitype/anthropic';
+import { sanitizeAnthropic } from '@devrchancay/sanitype/anthropic';
 
 const anthropic = sanitizeAnthropic(new Anthropic(), sanitizer, { system: true });
 await anthropic.messages.create({ model: 'claude-sonnet-5', max_tokens: 1024, messages });
@@ -306,7 +310,7 @@ await anthropic.messages.create({ model: 'claude-sonnet-5', max_tokens: 1024, me
 ### Any other SDK
 
 ```ts
-import { wrapLLMCall } from 'sanitype';
+import { wrapLLMCall } from '@devrchancay/sanitype';
 
 const generate = wrapLLMCall(sdk.generate, sanitizer, { keys: ['prompt', 'history'] });
 ```
@@ -316,7 +320,7 @@ const generate = wrapLLMCall(sdk.generate, sanitizer, { keys: ['prompt', 'histor
 Tokenize before the call and restore the original values in the model's answer:
 
 ```ts
-import { createSanitizer, createInMemoryTokenStore } from 'sanitype';
+import { createSanitizer, createInMemoryTokenStore } from '@devrchancay/sanitype';
 
 const store = createInMemoryTokenStore();
 const sanitizer = createSanitizer({
@@ -335,7 +339,7 @@ The in-memory store is for development and short-lived round-trips. For durable 
 
 | Scenario                                     | How                                                                                                                             |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Prompts to OpenAI / Anthropic / local models | `sanitype/openai`, `sanitype/anthropic` or `wrapLLMCall`. Tokenize for reversible round-trips.                                  |
+| Prompts to OpenAI / Anthropic / local models | `@devrchancay/sanitype/openai`, `@devrchancay/sanitype/anthropic` or `wrapLLMCall`. Tokenize for reversible round-trips.        |
 | Request/response logging                     | `sanitizeRequest(sanitizer, { headers: true })` then log `req.body`; or a pino/winston serializer calling `sanitizer.sanitize`. |
 | Error tracking (Sentry, Datadog)             | Sanitize the event in `beforeSend` and attach `report.summary` as context.                                                      |
 | Analytics events                             | Use `drop` for fields the vendor should never receive and `hash` for stable pseudonymous identifiers.                           |
@@ -366,20 +370,20 @@ Full details, defaults and edge cases: [docs/configuration.md](./docs/configurat
 
 ### API summary
 
-| Export                                                                           | Purpose                                                             |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `sanitize(payload, config?)`                                                     | One-off call.                                                       |
-| `sanitizeAsync(payload, config?)`                                                | Same, awaiting asynchronous token stores.                           |
-| `createSanitizer(config?)`                                                       | Reusable instance: `sanitize`, `sanitizeAsync`, `detect`, `extend`. |
-| `defineDetector(definition)`                                                     | Build a custom detector.                                            |
-| `builtinDetectors`, `defaultDetectorNames`, `heuristicDetectorNames`             | Introspection.                                                      |
-| `createInMemoryTokenStore()`                                                     | Development token store with `restore()`.                           |
-| `hashValue`, `maskGeneric`, `maskKeepLast`, ...                                  | The primitives the actions use, exported for custom detectors.      |
-| `wrapLLMCall(fn, sanitizer, { keys })`                                           | Generic request wrapper.                                            |
-| `sanitype/zod`: `sensitive`, `fieldsFromSchema`                                  | Zod side-channel.                                                   |
-| `sanitype/express`: `sanitizeRequest`, `sanitizeResponse`                        | Express middleware.                                                 |
-| `sanitype/openai`: `sanitizeOpenAI`, `wrapChatCompletions`, `wrapResponses`, ... | OpenAI-compatible wrappers.                                         |
-| `sanitype/anthropic`: `sanitizeAnthropic`, `wrapMessages`, ...                   | Anthropic wrappers.                                                 |
+| Export                                                                                        | Purpose                                                             |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `sanitize(payload, config?)`                                                                  | One-off call.                                                       |
+| `sanitizeAsync(payload, config?)`                                                             | Same, awaiting asynchronous token stores.                           |
+| `createSanitizer(config?)`                                                                    | Reusable instance: `sanitize`, `sanitizeAsync`, `detect`, `extend`. |
+| `defineDetector(definition)`                                                                  | Build a custom detector.                                            |
+| `builtinDetectors`, `defaultDetectorNames`, `heuristicDetectorNames`                          | Introspection.                                                      |
+| `createInMemoryTokenStore()`                                                                  | Development token store with `restore()`.                           |
+| `hashValue`, `maskGeneric`, `maskKeepLast`, ...                                               | The primitives the actions use, exported for custom detectors.      |
+| `wrapLLMCall(fn, sanitizer, { keys })`                                                        | Generic request wrapper.                                            |
+| `@devrchancay/sanitype/zod`: `sensitive`, `fieldsFromSchema`                                  | Zod side-channel.                                                   |
+| `@devrchancay/sanitype/express`: `sanitizeRequest`, `sanitizeResponse`                        | Express middleware.                                                 |
+| `@devrchancay/sanitype/openai`: `sanitizeOpenAI`, `wrapChatCompletions`, `wrapResponses`, ... | OpenAI-compatible wrappers.                                         |
+| `@devrchancay/sanitype/anthropic`: `sanitizeAnthropic`, `wrapMessages`, ...                   | Anthropic wrappers.                                                 |
 
 ## Performance
 

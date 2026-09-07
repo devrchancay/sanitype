@@ -125,7 +125,7 @@ Mask hides every letter and digit while keeping punctuation and spacing.
 ## Custom detectors
 
 ```ts
-import { defineDetector, maskKeepLast, countDigits } from 'sanitype';
+import { defineDetector, maskKeepLast, countDigits } from '@devrchancay/sanitype';
 
 const iban = defineDetector({
   name: 'iban', // lowercase letters, digits and underscores

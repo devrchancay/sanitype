@@ -11,9 +11,10 @@ originally planned for Phases 3 and 4. The remaining items are tracked below.
 - [x] Competitive comparison (`COMPARISON.md`)
 - [x] Name/branding finalized — **done**: `sanitype` (renamed from an
       earlier working name that risked confusion with the unrelated Sanity
-      CMS product). Repo live at github.com/devrchancay/sanitype, npm name
-      available at time of writing (verify again immediately before first
-      publish — availability can change).
+      CMS product). Repo live at github.com/devrchancay/sanitype. The bare
+      npm name was free but the registry rejects it as too similar to
+      existing packages, so the package is published as
+      `@devrchancay/sanitype`.
 - [x] Decide open questions from SPEC.md §7 — resolved, see SPEC.md §8.
 
 ## Phase 1 — MVP (core only, no adapters) — done in 0.1.0
@@ -44,7 +45,7 @@ Explicitly NOT in Phase 1: any Express/Fastify/Hono adapter, any LLM SDK
 wrapper, any locale beyond a documented minimal default set, hashing,
 tokenization.
 
-**MVP is done when**: a developer can `npm install sanitype`, define a
+**MVP is done when**: a developer can `npm install @devrchancay/sanitype`, define a
 plain object type, mark 2-3 fields sensitive via the schema side-channel,
 call `sanitize()`, and get correctly scrubbed output with a report — all
 from reading the README alone, no other docs needed.
@@ -57,10 +58,10 @@ scrubbers, so it should not lag far behind MVP.
 
 Scope:
 
-- One HTTP framework adapter: Express (`sanitype/express`) — chosen for
+- One HTTP framework adapter: Express (`@devrchancay/sanitype/express`) — chosen for
   ecosystem size, not necessarily fanciness.
 - One LLM wrapper: OpenAI-compatible chat completion shape
-  (`sanitype/openai`) — chosen because "OpenAI-compatible" also covers
+  (`@devrchancay/sanitype/openai`) — chosen because "OpenAI-compatible" also covers
   many proxies/local model servers, maximizing coverage for one adapter.
 - Add `hash` action (deterministic, documented algorithm choice).
 - Expand detector locale coverage: add Ecuador cédula pattern alongside

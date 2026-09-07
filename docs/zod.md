@@ -1,6 +1,6 @@
 # Zod integration
 
-`sanitype/zod` lets you declare sensitivity next to the Zod schema you already use for validation. It is a side-channel: the schema's parsing behaviour is unchanged, and sanitype reads it only to derive field paths.
+`@devrchancay/sanitype/zod` lets you declare sensitivity next to the Zod schema you already use for validation. It is a side-channel: the schema's parsing behaviour is unchanged, and sanitype reads it only to derive field paths.
 
 Works with Zod 3 and Zod 4 through structural inspection. `zod` is an optional peer dependency and is never imported at runtime by sanitype.
 
@@ -8,7 +8,7 @@ Works with Zod 3 and Zod 4 through structural inspection. `zod` is an optional p
 
 ```ts
 import { z } from 'zod';
-import { sensitive } from 'sanitype/zod';
+import { sensitive } from '@devrchancay/sanitype/zod';
 
 const User = z.object({
   email: sensitive(z.string().email(), 'mask'),
@@ -44,8 +44,8 @@ z.string().meta({ sensitive: { action: 'redact', category: 'ssn_us' } }); // Zod
 ## Deriving field rules
 
 ```ts
-import { createSanitizer } from 'sanitype';
-import { fieldsFromSchema } from 'sanitype/zod';
+import { createSanitizer } from '@devrchancay/sanitype';
+import { fieldsFromSchema } from '@devrchancay/sanitype/zod';
 
 const rules = fieldsFromSchema(User);
 // {

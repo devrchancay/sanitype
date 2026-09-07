@@ -79,7 +79,7 @@ This is the only action that changes the structure of the output. Use it for fie
 Replaces the value with a token obtained from a caller-supplied `TokenStore`. The store decides the token format and how to reverse it.
 
 ```ts
-import { createInMemoryTokenStore, createSanitizer } from 'sanitype';
+import { createInMemoryTokenStore, createSanitizer } from '@devrchancay/sanitype';
 
 const store = createInMemoryTokenStore({ prefix: 'tok_' });
 const sanitizer = createSanitizer({ detectors: { email: 'tokenize' }, tokenStore: store });

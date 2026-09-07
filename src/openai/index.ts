@@ -8,14 +8,14 @@
  *
  * ```ts
  * import OpenAI from 'openai';
- * import { createSanitizer } from 'sanitype';
- * import { sanitizeOpenAI } from 'sanitype/openai';
+ * import { createSanitizer } from '@devrchancay/sanitype';
+ * import { sanitizeOpenAI } from '@devrchancay/sanitype/openai';
  *
  * const openai = sanitizeOpenAI(new OpenAI(), createSanitizer());
  * await openai.chat.completions.create({ model: 'gpt-4o-mini', messages });
  * ```
  *
- * @module sanitype/openai
+ * @module @devrchancay/sanitype/openai
  */
 import { sanitizeParams, sanitizeParamsAsync, wrapLLMCall } from '../llm/wrap.js';
 import type { LLMWrapOptions, SanitizedParams } from '../llm/wrap.js';

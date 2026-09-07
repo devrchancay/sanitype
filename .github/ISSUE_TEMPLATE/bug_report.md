@@ -13,7 +13,7 @@ assignees: ''
 ## Reproduction
 
 ```ts
-import { sanitize } from 'sanitype';
+import { sanitize } from '@devrchancay/sanitype';
 
 const { data, report } = sanitize(/* input */, /* config */);
 ```
